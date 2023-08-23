@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 
 const SurveyPage3 = () => {
@@ -35,12 +36,13 @@ const SurveyPage3 = () => {
 
   // const amountOptions = ["5만원", "10만원", "15만원", "20만원", "30만원", "50만원", "100만원 혹은 그 이상"];
   const amountOptions = [
-    { money: "5만원", value: 5 },
-    { money: "10만원", value: 10 },
-    { money: "15만원", value: 15 },
-    { money: "20만원", value: 20 },
-    { money: "30만원", value: 30 },
-    { money: "100만원 혹은 그 이상", value: 100 },
+    { option: "5만원", value: 5 },
+    { option: "10만원", value: 10 },
+    { option: "15만원", value: 15 },
+    { option: "20만원", value: 20 },
+    { option: "30만원", value: 30 },
+    { option: "50만원", value: 50 },
+    { option: "100만원 혹은 그 이상", value: 100 },
   ];
 
   // const eventOptions = ["돌잔치", "결혼식", "생일", "개업식", "기념일", "병문안위로금", "임신/출산축하금", "입학/졸업축하금"];
@@ -63,6 +65,7 @@ const SurveyPage3 = () => {
   const [showWarning, setShowWarning] = useState(false);
   const [generatedQuestions, setGeneratedQuestions] = useState([]);
   const [selectedAnswers, setSelectedAnswers] = useState([]); // 선택된 답변들을 저장하는 배열
+  const [submissionState, setSubmissionState] = useState("default"); // 'default', 'submit',
 
   useEffect(() => {
     const generatedQuestions = targetOptions.map((targetOption) => {
@@ -72,6 +75,7 @@ const SurveyPage3 = () => {
       if (targetOption.target === "나이") {
         return {
           target: targetOption.target,
+          targetNum: "",
           relationship: "",
           event: "",
 
@@ -87,6 +91,7 @@ const SurveyPage3 = () => {
       } else if (targetOption.target === "연소득") {
         return {
           target: targetOption.target,
+          targetNum: "",
           relationship: "",
           event: "",
 
@@ -101,7 +106,7 @@ const SurveyPage3 = () => {
         };
       } else if (targetOption.target === "자녀") {
         const childOptions = relationshipOptions.filter((option) => option.intimacy === 2 || option.intimacy === 3);
-        randomRelationship = childOptions[Math.floor(Math.random() * childOptions.length)].title;
+        randomRelationship = childOptions[Math.floor(Math.random() * childOptions.length)];
         const childEventOptions = [
           { event: "돌잔치", eventNum: 3 },
           { event: "결혼식", eventNum: 0 },
@@ -112,16 +117,19 @@ const SurveyPage3 = () => {
           { event: "임신/출산축하금", eventNum: 4 },
           { event: "입학/졸업축하금", eventNum: 4 },
         ];
-        randomEvent = childEventOptions[Math.floor(Math.random() * childEventOptions.length)].event;
+        randomEvent = childEventOptions[Math.floor(Math.random() * childEventOptions.length)];
 
         return {
           target: targetOption.target,
-          relationship: randomRelationship,
-          event: randomEvent,
+          targetNum: targetOption.targetNum,
+          relationship: randomRelationship.title,
+          relationshipNum: randomRelationship.intimacy,
+          event: randomEvent.event,
+          eventNum: randomEvent.eventNum,
         };
       } else if (targetOption.target === "부모님") {
         const childOptions = relationshipOptions.filter((option) => option.intimacy === 2 || option.intimacy === 3);
-        randomRelationship = childOptions[Math.floor(Math.random() * childOptions.length)].title;
+        randomRelationship = childOptions[Math.floor(Math.random() * childOptions.length)];
         const childEventOptions = [
           { event: "생일", eventNum: 2 },
           { event: "개업식", eventNum: 4 },
@@ -129,16 +137,19 @@ const SurveyPage3 = () => {
           { event: "병문안위로금", eventNum: 4 },
           { event: "입학/졸업축하금", eventNum: 4 },
         ];
-        randomEvent = childEventOptions[Math.floor(Math.random() * childEventOptions.length)].event;
+        randomEvent = childEventOptions[Math.floor(Math.random() * childEventOptions.length)];
 
         return {
           target: targetOption.target,
-          relationship: randomRelationship,
-          event: randomEvent,
+          targetNum: targetOption.targetNum,
+          relationship: randomRelationship.title,
+          relationshipNum: randomRelationship.intimacy,
+          event: randomEvent.event,
+          eventNum: randomEvent.eventNum,
         };
       } else if (targetOption.target === "시부모님(장인장모)") {
         const childOptions = relationshipOptions.filter((option) => option.intimacy === 2 || option.intimacy === 3);
-        randomRelationship = childOptions[Math.floor(Math.random() * childOptions.length)].title;
+        randomRelationship = childOptions[Math.floor(Math.random() * childOptions.length)];
         const childEventOptions = [
           { event: "생일", eventNum: 2 },
           { event: "개업식", eventNum: 4 },
@@ -146,26 +157,32 @@ const SurveyPage3 = () => {
           { event: "병문안위로금", eventNum: 4 },
           { event: "입학/졸업축하금", eventNum: 4 },
         ];
-        randomEvent = childEventOptions[Math.floor(Math.random() * childEventOptions.length)].event;
+        randomEvent = childEventOptions[Math.floor(Math.random() * childEventOptions.length)];
 
         return {
           target: targetOption.target,
-          relationship: randomRelationship,
-          event: randomEvent,
+          targetNum: targetOption.targetNum,
+          relationship: randomRelationship.title,
+          relationshipNum: randomRelationship.intimacy,
+          event: randomEvent.event,
+          eventNum: randomEvent.eventNum,
         };
       } else if (targetOption.target === "친척/사촌") {
         const childOptions = relationshipOptions.filter((option) => option.intimacy === 2 || option.intimacy === 3);
-        randomRelationship = childOptions[Math.floor(Math.random() * childOptions.length)].title;
-        randomEvent = eventOptions[Math.floor(Math.random() * eventOptions.length)].event;
+        randomRelationship = childOptions[Math.floor(Math.random() * childOptions.length)];
+        randomEvent = eventOptions[Math.floor(Math.random() * eventOptions.length)];
 
         return {
           target: targetOption.target,
-          relationship: randomRelationship,
-          event: randomEvent,
+          targetNum: targetOption.targetNum,
+          relationship: randomRelationship.title,
+          relationshipNum: randomRelationship.intimacy,
+          event: randomEvent.event,
+          eventNum: randomEvent.eventNum,
         };
       } else if (targetOption.target === "사촌 이상의 친척") {
         const childOptions = relationshipOptions.filter((option) => option.intimacy === 2 || option.intimacy === 3);
-        randomRelationship = childOptions[Math.floor(Math.random() * childOptions.length)].title;
+        randomRelationship = childOptions[Math.floor(Math.random() * childOptions.length)];
         const childEventOptions = [
           { event: "부모상", eventNum: 1 },
           { event: "조부모상", eventNum: 1 },
@@ -175,12 +192,15 @@ const SurveyPage3 = () => {
           { event: "병문안위로금", eventNum: 4 },
           { event: "입학/졸업축하금", eventNum: 4 },
         ];
-        randomEvent = childEventOptions[Math.floor(Math.random() * childEventOptions.length)].event;
+        randomEvent = childEventOptions[Math.floor(Math.random() * childEventOptions.length)];
 
         return {
           target: targetOption.target,
-          relationship: randomRelationship,
-          event: randomEvent,
+          targetNum: targetOption.targetNum,
+          relationship: randomRelationship.title,
+          relationshipNum: randomRelationship.intimacy,
+          event: randomEvent.event,
+          eventNum: randomEvent.eventNum,
         };
       } else if (targetOption.target === "연인") {
         const childOptions = [
@@ -188,7 +208,7 @@ const SurveyPage3 = () => {
           { title: "1년정도 꾸준하게 만나고 있는 사이", intimacy: 2 },
           { title: "오랫동안 교제해온 사이", intimacy: 3 },
         ];
-        randomRelationship = childOptions[Math.floor(Math.random() * childOptions.length)].title;
+        randomRelationship = childOptions[Math.floor(Math.random() * childOptions.length)];
         const childEventOptions = [
           { event: "부모상", eventNum: 1 },
           { event: "조부모상", eventNum: 1 },
@@ -198,12 +218,15 @@ const SurveyPage3 = () => {
           { event: "병문안위로금", eventNum: 4 },
           { event: "입학/졸업축하금", eventNum: 4 },
         ];
-        randomEvent = childEventOptions[Math.floor(Math.random() * childEventOptions.length)].event;
+        randomEvent = childEventOptions[Math.floor(Math.random() * childEventOptions.length)];
 
         return {
           target: targetOption.target,
-          relationship: randomRelationship,
-          event: randomEvent,
+          targetNum: targetOption.targetNum,
+          relationship: randomRelationship.title,
+          relationshipNum: randomRelationship.intimacy,
+          event: randomEvent.event,
+          eventNum: randomEvent.eventNum,
         };
       } else if (targetOption.target === "배우자") {
         const childEventOptions = [
@@ -217,21 +240,28 @@ const SurveyPage3 = () => {
           { event: "입학/졸업축하금", eventNum: 4 },
         ];
 
-        randomEvent = childEventOptions[Math.floor(Math.random() * childEventOptions.length)].event;
+        randomEvent = childEventOptions[Math.floor(Math.random() * childEventOptions.length)];
 
         return {
           target: targetOption.target,
+          targetNum: targetOption.targetNum,
           relationship: "",
-          event: randomEvent,
+          //6은 기타로 임의지정
+          relationshipNum: 6,
+          event: randomEvent.event,
+          eventNum: randomEvent.eventNum,
         };
       } else {
-        randomRelationship = relationshipOptions[Math.floor(Math.random() * relationshipOptions.length)].title;
-        randomEvent = eventOptions[Math.floor(Math.random() * eventOptions.length)].event;
+        randomRelationship = relationshipOptions[Math.floor(Math.random() * relationshipOptions.length)];
+        randomEvent = eventOptions[Math.floor(Math.random() * eventOptions.length)];
 
         return {
           target: targetOption.target,
-          relationship: randomRelationship,
-          event: randomEvent,
+          targetNum: targetOption.targetNum,
+          relationship: randomRelationship.title,
+          relationshipNum: randomRelationship.intimacy,
+          event: randomEvent.event,
+          eventNum: randomEvent.eventNum,
         };
       }
     });
@@ -247,15 +277,18 @@ const SurveyPage3 = () => {
     // 선택된 답변을 selectedAnswers에 저장
     const updatedSelectedAnswers = [...selectedAnswers];
     updatedSelectedAnswers[questionIndex] = {
-      target: currentQuestion.target,
-      relationship: currentRelationship,
-      event: currentEvent,
-      answer: currentQuestion?.amountOptions ? currentQuestion.amountOptions[index].value : amountOptions[index].value,
+      // target: currentQuestion.target,
+      // relationship: currentRelationship,
+      // event: currentEvent,
+      eventCategory: currentEventNum,
+      acquaintanceType: currentQuestion.targetNum,
+      intimacyLevel: currentRelationshipNum,
+      payAmount: currentQuestion?.amountOptions ? currentQuestion.amountOptions[index].value : amountOptions[index].value,
     };
     setSelectedAnswers(updatedSelectedAnswers);
   };
 
-  const handleNextQuestion = () => {
+  const handleNextQuestion = async () => {
     if (answers.some((answer) => answer)) {
       if (questionIndex < targetOptions.length - 1) {
         setQuestionIndex(questionIndex + 1);
@@ -272,19 +305,37 @@ const SurveyPage3 = () => {
           }
         }
       } else {
-        // 모든 질문에 답변을 선택한 경우, 선택된 답변 배열을 확인하거나 사용할 수 있습니다.
+        // 모든 질문에 답변을 선택한 경우, axios로 데이터 제출
+        console.log(selectedAnswers.slice(2));
         console.log(selectedAnswers);
+        const shouldSubmit = window.confirm("제출하시겠습니까?");
+
+        if (shouldSubmit) {
+          console.log("제출");
+          console.log(selectedAnswers);
+          setSubmissionState("submit");
+          // try {
+          //   const response = await axios.post("/recommendation/save", {
+          //     ageGroup: selectedAnswers[0].answer,
+          //     annualIncome: selectedAnswers[1].answer,
+          //     relationInfoList: selectedAnswers.slice(2),
+          //   });
+
+          //   if (response.status === 201) {
+          //     setSubmissionState("submit");
+          //     console.log("Recommendation data submitted successfully!");
+          //     // You can perform additional actions here upon success
+          //   }
+          // } catch (error) {
+          //   console.error("Error submitting recommendation data:", error);
+          //   // Handle errors or display error messages
+          // }
+        }
       }
     } else {
       setShowWarning(true);
     }
   };
-
-  // const handlePreviousQuestion = () => {
-  //   if (questionIndex > 0) {
-  //     setQuestionIndex(questionIndex - 1);
-  //   }
-  // };
 
   const handlePreviousQuestion = () => {
     if (questionIndex > 0) {
@@ -294,8 +345,13 @@ const SurveyPage3 = () => {
       // 현재 질문의 선택된 답변 정보를 이전 질문으로 가져오기
       const updatedAnswers = Array(amountOptions.length).fill(false);
       const previousSelected = selectedAnswers[questionIndex - 1];
+
+      console.log(answers);
+      const answerIndex = answers.findIndex((option) => option === true);
+      console.log(answerIndex);
       if (previousSelected) {
         const answerIndex = amountOptions.findIndex((option) => option.value === previousSelected.answer);
+        console.log(previousSelected);
         if (answerIndex !== -1) {
           updatedAnswers[answerIndex] = true;
           setAnswers(updatedAnswers);
@@ -306,146 +362,152 @@ const SurveyPage3 = () => {
 
   const currentQuestion = generatedQuestions[questionIndex];
   const currentEvent = currentQuestion ? currentQuestion.event : "";
+  const currentEventNum = currentQuestion ? currentQuestion.eventNum : "";
   const currentRelationship = currentQuestion ? currentQuestion.relationship : "";
+  const currentRelationshipNum = currentQuestion ? currentQuestion.relationshipNum : "";
 
   return (
     <div className="wrap">
-      <div className="content_wrap">
-        <div className="logo_title">
-          <img className="logo" alt="logo" src="/howmuch.png" />
-          <h2 className="main_title"> 경조사 비용 관리, 추천 어플 얼마나</h2>
-        </div>
-        <h3 className="qa_title">
-          {currentQuestion?.target === "나이" || currentQuestion?.target === "연소득" ? (
-            <>
-              <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentQuestion?.target}</span>
-              <span>(이)가 어떻게 되시나요?</span>
-            </>
-          ) : currentQuestion?.target === "배우자" ? (
-            <>
-              <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentQuestion?.target}</span>의 <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentEvent}</span>에 얼마를
-              내시겠어요?
-            </>
-          ) : (
-            <>
-              <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentRelationship}</span>의 관계인 <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentQuestion?.target}</span>
-              의 <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentEvent}</span>에 얼마를 내시겠어요?
-            </>
-          )}
-        </h3>
-        <ul className="answer_list">
-          {currentQuestion?.amountOptions
-            ? currentQuestion.amountOptions.map((option, index) => (
-                <li key={index} style={{ marginBottom: "10px", fontSize: "16px" }} value={option.value}>
-                  <label style={{ display: "block" }}>
-                    <input type="radio" checked={answers[index]} onChange={() => handleOptionSelect(index)} style={{ display: "none" }} />
-                    <span
-                      style={{
-                        display: "inline-block",
-                        width: "20px",
-                        height: "20px",
-                        marginRight: "10px",
-                        backgroundColor: answers[index] ? "#6d61ff" : "white",
-                        borderRadius: "50%",
-                        cursor: "pointer",
-                        position: "relative",
-                      }}
-                    >
-                      {answers[index] && (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16" style={{ position: "absolute", top: "2px", left: "1px", fontFamily: "font_B" }}>
-                          <path d="M12.74 4.28a1 1 0 0 1 1.41 1.41l-6 6a1 1 0 0 1-1.41 0l-3-3a1 1 0 0 1 1.41-1.41L7 10.58l5.33-5.3z" />
-                        </svg>
-                      )}
-                    </span>
-                    <span
-                      className="option_span"
-                      style={{ position: "relative", top: "-5px", marginLeft: "5px", color: answers[index] ? "#6d61ff" : "black", fontFamily: answers[index] ? "font_EB" : "font_M" }}
-                    >
-                      {option.option}
-                    </span>
-                  </label>
-                </li>
-              ))
-            : amountOptions.map((option, index) => (
-                <li key={index} style={{ marginBottom: "10px", fontSize: "16px" }} value={option.value}>
-                  <label style={{ display: "block" }}>
-                    <input type="radio" checked={answers[index]} onChange={() => handleOptionSelect(index)} style={{ display: "none" }} />
-                    <span
-                      style={{
-                        display: "inline-block",
-                        width: "20px",
-                        height: "20px",
-                        marginRight: "10px",
-                        backgroundColor: answers[index] ? "#6d61ff" : "white",
-                        borderRadius: "50%",
-                        cursor: "pointer",
-                        position: "relative",
-                      }}
-                    >
-                      {answers[index] && (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16" style={{ position: "absolute", top: "2px", left: "1px", fontFamily: "font_B" }}>
-                          <path d="M12.74 4.28a1 1 0 0 1 1.41 1.41l-6 6a1 1 0 0 1-1.41 0l-3-3a1 1 0 0 1 1.41-1.41L7 10.58l5.33-5.3z" />
-                        </svg>
-                      )}
-                    </span>
-                    <span
-                      className="option_span"
-                      style={{ position: "relative", top: "-5px", marginLeft: "5px", color: answers[index] ? "#6d61ff" : "black", fontFamily: answers[index] ? "font_EB" : "font_M" }}
-                    >
-                      {option.money}
-                    </span>
-                  </label>
-                </li>
-              ))}
-          {/* {amountOptions.map((option, index) => (
-            <li key={index} style={{ marginBottom: "10px", fontSize: "16px" }}>
-              <label style={{ display: "block" }}>
-                <input type="radio" checked={answers[index]} onChange={() => handleOptionSelect(index)} style={{ display: "none" }} />
-                <span
-                  style={{
-                    display: "inline-block",
-                    width: "20px",
-                    height: "20px",
-                    marginRight: "10px",
-                    backgroundColor: answers[index] ? "#6d61ff" : "white",
-                    borderRadius: "50%",
-                    cursor: "pointer",
-                    position: "relative",
-                  }}
-                >
-                  {answers[index] && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16" style={{ position: "absolute", top: "2px", left: "1px", fontFamily: "font_B" }}>
-                      <path d="M12.74 4.28a1 1 0 0 1 1.41 1.41l-6 6a1 1 0 0 1-1.41 0l-3-3a1 1 0 0 1 1.41-1.41L7 10.58l5.33-5.3z" />
-                    </svg>
-                  )}
-                </span>
-                <span
-                  className="option_span"
-                  style={{ position: "relative", top: "-5px", marginLeft: "5px", color: answers[index] ? "#6d61ff" : "black", fontFamily: answers[index] ? "font_EB" : "font_M" }}
-                >
-                  {option.money}
-                </span>
-              </label>
-            </li>
-          ))} */}
-        </ul>
-
-        {showWarning && <p style={{ color: "red", fontFamily: "font_B" }}>답변을 선택해주세요.</p>}
-
-        <div className="btn_wrap">
-          {/* <button className="handle_btn" onClick={handlePreviousQuestion}>
-            이전
-          </button> */}
-          <div className="left_qa">
-            <p>
-              {questionIndex + 1} / {targetOptions.length}
-            </p>
+      {submissionState === "default" && (
+        <div className="content_wrap">
+          <div className="logo_title">
+            <img className="logo" alt="logo" src="/howmuch.png" />
+            <h2 className="main_title"> 경조사 비용 관리, 추천 어플 얼마나</h2>
           </div>
-          <button className="handle_btn" onClick={handleNextQuestion}>
-            다음
-          </button>
+          <h3 className="qa_title">
+            {currentQuestion?.target === "나이" || currentQuestion?.target === "연소득" ? (
+              <>
+                <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentQuestion?.target}</span>
+                <span>(이)가 어떻게 되시나요?</span>
+              </>
+            ) : currentQuestion?.target === "배우자" ? (
+              <>
+                <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentQuestion?.target}</span>의 <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentEvent}</span>에 얼마를
+                내시겠어요?
+              </>
+            ) : (
+              <>
+                <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentRelationship}</span>의 관계인{" "}
+                <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentQuestion?.target}</span>의 <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentEvent}</span>에 얼마를
+                내시겠어요?
+              </>
+            )}
+          </h3>
+          <ul className="answer_list">
+            {currentQuestion?.amountOptions
+              ? currentQuestion.amountOptions.map((option, index) => (
+                  <li key={index} style={{ marginBottom: "10px", fontSize: "16px" }} value={option.value}>
+                    {console.log(option)}
+                    <label style={{ display: "block" }}>
+                      <input type="radio" checked={answers[index]} onChange={() => handleOptionSelect(index)} style={{ display: "none" }} />
+                      <span
+                        style={{
+                          display: "inline-block",
+                          width: "20px",
+                          height: "20px",
+                          marginRight: "10px",
+                          backgroundColor: answers[index] ? "#6d61ff" : "white",
+                          borderRadius: "50%",
+                          cursor: "pointer",
+                          position: "relative",
+                        }}
+                      >
+                        {answers[index] && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="white"
+                            viewBox="0 0 16 16"
+                            style={{ position: "absolute", top: "2px", left: "1px", fontFamily: "font_B" }}
+                          >
+                            <path d="M12.74 4.28a1 1 0 0 1 1.41 1.41l-6 6a1 1 0 0 1-1.41 0l-3-3a1 1 0 0 1 1.41-1.41L7 10.58l5.33-5.3z" />
+                          </svg>
+                        )}
+                      </span>
+                      <span
+                        className="option_span"
+                        style={{ position: "relative", top: "-5px", marginLeft: "5px", color: answers[index] ? "#6d61ff" : "black", fontFamily: answers[index] ? "font_EB" : "font_M" }}
+                      >
+                        {option.option}
+                      </span>
+                    </label>
+                  </li>
+                ))
+              : amountOptions.map((option, index) => (
+                  <li key={index} style={{ marginBottom: "10px", fontSize: "16px" }} value={option.value}>
+                    <label style={{ display: "block" }}>
+                      <input type="radio" checked={answers[index]} onChange={() => handleOptionSelect(index)} style={{ display: "none" }} />
+                      <span
+                        style={{
+                          display: "inline-block",
+                          width: "20px",
+                          height: "20px",
+                          marginRight: "10px",
+                          backgroundColor: answers[index] ? "#6d61ff" : "white",
+                          borderRadius: "50%",
+                          cursor: "pointer",
+                          position: "relative",
+                        }}
+                      >
+                        {answers[index] && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="white"
+                            viewBox="0 0 16 16"
+                            style={{ position: "absolute", top: "2px", left: "1px", fontFamily: "font_B" }}
+                          >
+                            <path d="M12.74 4.28a1 1 0 0 1 1.41 1.41l-6 6a1 1 0 0 1-1.41 0l-3-3a1 1 0 0 1 1.41-1.41L7 10.58l5.33-5.3z" />
+                          </svg>
+                        )}
+                      </span>
+                      <span
+                        className="option_span"
+                        style={{ position: "relative", top: "-5px", marginLeft: "5px", color: answers[index] ? "#6d61ff" : "black", fontFamily: answers[index] ? "font_EB" : "font_M" }}
+                      >
+                        {option.option}
+                      </span>
+                    </label>
+                  </li>
+                ))}
+          </ul>
+
+          {showWarning && <p style={{ color: "red", fontFamily: "font_B" }}>답변을 선택해주세요.</p>}
+
+          <div className="btn_wrap">
+            {questionIndex > 0 && (
+              <button className="handle_btn" onClick={handlePreviousQuestion}>
+                이전
+              </button>
+            )}
+            <div className="left_qa">
+              <p>
+                {questionIndex + 1} / {targetOptions.length}
+              </p>
+            </div>
+            {questionIndex === 14 ? (
+              <button className="handle_btn" onClick={handleNextQuestion}>
+                제출
+              </button>
+            ) : (
+              <button className="handle_btn" onClick={handleNextQuestion}>
+                다음
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
+
+      {submissionState === "submit" && (
+        <div className="content_wrap">
+          <div className="logo_title" style={{ flexDirection: "column" }}>
+            <img className="logo" alt="logo" src="/howmuch.png" style={{ marginBottom: "20px" }} />
+            <h2 className="main_title">참여해주셔서 감사합니다. 😊</h2>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
