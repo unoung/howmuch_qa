@@ -68,6 +68,10 @@ body {
   font-size: 16px;
 }
 
+.recommend_text {
+  margin-top: 20px;
+  padding-left: 8px;
+}
 .btn_wrap {
   display: flex;
   align-items: center;

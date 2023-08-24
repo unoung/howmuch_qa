@@ -66,6 +66,7 @@ const SurveyPage3 = () => {
   const [generatedQuestions, setGeneratedQuestions] = useState([]);
   const [selectedAnswers, setSelectedAnswers] = useState([]); // 선택된 답변들을 저장하는 배열
   const [submissionState, setSubmissionState] = useState("default"); // 'default', 'submit',
+  const [recommendList, setRecommendList] = useState([]);
 
   useEffect(() => {
     const generatedQuestions = targetOptions.map((targetOption) => {
@@ -270,8 +271,38 @@ const SurveyPage3 = () => {
     console.log(generatedQuestions);
   }, []);
 
+  useEffect(() => {
+    setAnswers(Array(amountOptions.length).fill(false));
+    console.log(currentQuestion);
+    if (currentQuestion !== undefined) {
+      if (currentQuestion.target !== "나이" && currentQuestion.target !== "연소득") {
+        console.log(selectedAnswers);
+        console.log("d");
+        // API 호출을 위한 요청 객체 생성
+        const requestConfig = {
+          params: {
+            ageGroup: selectedAnswers[0].payAmount,
+            annualIncome: selectedAnswers[1].payAmount,
+            eventCategory: currentQuestion.eventNum,
+            acquaintanceType: currentQuestion.targetNum,
+            intimacyLevel: currentQuestion.relationshipNum,
+          },
+        };
+        console.log(requestConfig);
+      }
+    }
+    // axios
+    //   .get("url",requestConfig)
+    //   .then((res) => {
+    //     setRecommendList(res.data);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error fetching data:", error);
+    //   });
+  }, [questionIndex]);
+
   const handleOptionSelect = (index) => {
-    const newAnswers = Array(amountOptions.length).fill(false);
+    const newAnswers = currentQuestion.target === "나이" || currentQuestion.target === "연소득" ? Array(currentQuestion.amountOptions.length).fill(false) : Array(amountOptions.length).fill(false);
     newAnswers[index] = true;
     setAnswers(newAnswers);
     // 선택된 답변을 selectedAnswers에 저장
@@ -296,7 +327,10 @@ const SurveyPage3 = () => {
 
         // 현재 질문의 선택된 답변 정보를 다음 질문으로 가져오기
         const updatedAnswers = Array(amountOptions.length).fill(false);
+        // console.log(updatedAnswers);
         const nextSelected = selectedAnswers[questionIndex + 1];
+        console.log(selectedAnswers);
+        console.log(questionIndex);
         if (nextSelected) {
           const answerIndex = amountOptions.findIndex((option) => option.value === nextSelected.answer);
           if (answerIndex !== -1) {
@@ -306,9 +340,8 @@ const SurveyPage3 = () => {
         }
       } else {
         // 모든 질문에 답변을 선택한 경우, axios로 데이터 제출
-        console.log(selectedAnswers.slice(2));
         console.log(selectedAnswers);
-        const shouldSubmit = window.confirm("제출하시겠습니까?");
+        const shouldSubmit = window.confirm("답변을 제출하시겠습니까?");
 
         if (shouldSubmit) {
           console.log("제출");
@@ -393,11 +426,15 @@ const SurveyPage3 = () => {
               </>
             )}
           </h3>
+          {currentQuestion?.target === "나이" || currentQuestion?.target === "연소득" ? null : (
+            <h5 className="recommend_text">
+              이 질문에 가장 많은 사용자가 <span style={{ color: "#6d61ff", fontSize: 15 }}>10만원</span>이라고 답변했어요!
+            </h5>
+          )}
           <ul className="answer_list">
             {currentQuestion?.amountOptions
               ? currentQuestion.amountOptions.map((option, index) => (
                   <li key={index} style={{ marginBottom: "10px", fontSize: "16px" }} value={option.value}>
-                    {console.log(option)}
                     <label style={{ display: "block" }}>
                       <input type="radio" checked={answers[index]} onChange={() => handleOptionSelect(index)} style={{ display: "none" }} />
                       <span

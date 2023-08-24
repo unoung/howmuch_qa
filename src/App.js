@@ -18,7 +18,10 @@ function App() {
           <div className="startInfo">
             <div className="info_title">
               <img className="logo" alt="logo" src="/howmuch.png" style={{ marginBottom: "30px" }} />
-              <h2 className="main_title"> 안녕하세요!</h2>
+              <h2 className="main_title">
+                가까운 사이, 애매한 사이, 그냥 아는 사이 <br />
+                도대체 경조사비를 얼마나 내야 할 지 고민되진 않으셨나요?
+              </h2>
               <p>어플 소개 및 설문조사 소개</p>
             </div>
             <button className="start_btn" onClick={handleStartButtonClick}>
