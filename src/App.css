@@ -15,7 +15,7 @@ body {
   position: relative;
   margin: 20px auto;
   max-width: 320px;
-  height: 500px;
+  /* height: 500px; */
   /* background-color: #f4f4f4; */
   background-color: #f3f3ff;
   padding: 20px 0;
@@ -47,10 +47,28 @@ body {
   /* color: #6d61ff; */
   font-size: 17px;
   text-align: center;
-  line-height: 26px;
+  line-height: 25px;
   margin-bottom: 25px;
 }
 
+.des_box {
+  margin-bottom: 25px;
+}
+.des_title {
+  font-size: 15px;
+  font-family: "font_B";
+  margin-bottom: 8px;
+}
+.des_info {
+  font-size: 14px;
+  font-weight: "font_M";
+  color: rgb(31, 31, 31);
+}
+.des_warning {
+  font-size: 14px;
+  color: #a09bd1;
+  font-family: "font_SB";
+}
 .qa_title {
   font-family: "font_R";
   font-size: 16px;
@@ -98,7 +116,7 @@ body {
 }
 
 .start_btn {
-  margin: 0 auto;
+  margin: 0px auto;
   display: block;
   background-color: #6d61ff;
   border: none;
