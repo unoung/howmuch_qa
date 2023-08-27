@@ -45,8 +45,10 @@ body {
 .main_title {
   font-family: "font_B";
   /* color: #6d61ff; */
-  font-size: 18px;
+  font-size: 17px;
   text-align: center;
+  line-height: 26px;
+  margin-bottom: 25px;
 }
 
 .qa_title {

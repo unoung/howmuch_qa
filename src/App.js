@@ -21,6 +21,8 @@ function App() {
               <h2 className="main_title">
                 가까운 사이, 애매한 사이, 그냥 아는 사이 <br />
                 도대체 경조사비를 얼마나 내야 할 지 고민되진 않으셨나요?
+                <br />
+                <span style={{ color: "#6d61ff" }}>얼마나</span>를 통해서 경조사비를 추천 받아 보세요.
               </h2>
               <p>어플 소개 및 설문조사 소개</p>
             </div>
