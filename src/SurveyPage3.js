@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 
+const BASE_URL = "http://43.200.225.232:8080";
+
 const SurveyPage3 = () => {
   const relationshipOptions = [
     { title: "마주치면 인사만 하는 사이", intimacy: 1 },
@@ -292,7 +294,7 @@ const SurveyPage3 = () => {
       }
     }
     // axios
-    //   .get("url",requestConfig)
+    //   .get("/recommendation/get",requestConfig)
     //   .then((res) => {
     //     setRecommendList(res.data);
     //   })
@@ -347,22 +349,26 @@ const SurveyPage3 = () => {
           console.log("제출");
           console.log(selectedAnswers);
           setSubmissionState("submit");
-          // try {
-          //   const response = await axios.post("/recommendation/save", {
-          //     ageGroup: selectedAnswers[0].answer,
-          //     annualIncome: selectedAnswers[1].answer,
-          //     relationInfoList: selectedAnswers.slice(2),
-          //   });
+          try {
+            const response = await axios
+              .post(`/recommendation/save`, {
+                ageGroup: selectedAnswers[0].answer,
+                annualIncome: selectedAnswers[1].answer,
+                relationInfoList: selectedAnswers.slice(2),
+              })
+              .then(() => {
+                console.log("완료");
+              });
 
-          //   if (response.status === 201) {
-          //     setSubmissionState("submit");
-          //     console.log("Recommendation data submitted successfully!");
-          //     // You can perform additional actions here upon success
-          //   }
-          // } catch (error) {
-          //   console.error("Error submitting recommendation data:", error);
-          //   // Handle errors or display error messages
-          // }
+            if (response.status === 201) {
+              setSubmissionState("submit");
+              console.log("Recommendation data submitted successfully!");
+              // You can perform additional actions here upon success
+            }
+          } catch (error) {
+            console.error("Error submitting recommendation data:", error);
+            // Handle errors or display error messages
+          }
         }
       }
     } else {
