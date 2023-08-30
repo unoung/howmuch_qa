@@ -1,4 +1,3 @@
-import SurveyPage2 from "./SurveyPage2";
 import "./App.css";
 import "./font.css";
 import SurveyPage3 from "./SurveyPage3";

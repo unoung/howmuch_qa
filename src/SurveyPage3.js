@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { API } from "./api";
 
 const BASE_URL = "http://43.200.225.232:8080";
 
@@ -68,7 +69,7 @@ const SurveyPage3 = () => {
   const [generatedQuestions, setGeneratedQuestions] = useState([]);
   const [selectedAnswers, setSelectedAnswers] = useState([]); // 선택된 답변들을 저장하는 배열
   const [submissionState, setSubmissionState] = useState("default"); // 'default', 'submit',
-  const [recommendList, setRecommendList] = useState([]);
+  const [recommendList, setRecommendList] = useState(0);
 
   useEffect(() => {
     const generatedQuestions = targetOptions.map((targetOption) => {
@@ -270,37 +271,34 @@ const SurveyPage3 = () => {
     });
 
     setGeneratedQuestions(generatedQuestions);
-    console.log(generatedQuestions);
+    // console.log(generatedQuestions);
   }, []);
 
   useEffect(() => {
     setAnswers(Array(amountOptions.length).fill(false));
-    console.log(currentQuestion);
+    // console.log(currentQuestion);
     if (currentQuestion !== undefined) {
       if (currentQuestion.target !== "나이" && currentQuestion.target !== "연소득") {
-        console.log(selectedAnswers);
-        console.log("d");
-        // API 호출을 위한 요청 객체 생성
-        const requestConfig = {
-          params: {
-            ageGroup: selectedAnswers[0].payAmount,
-            annualIncome: selectedAnswers[1].payAmount,
-            eventCategory: currentQuestion.eventNum,
-            acquaintanceType: currentQuestion.targetNum,
-            intimacyLevel: currentQuestion.relationshipNum,
-          },
+        const getData = async () => {
+          try {
+            const response = await axios
+              .get(
+                `http://43.200.225.232:8080/recommendation/get?ageGroup=${selectedAnswers[0].payAmount}&annualIncome=${selectedAnswers[1].payAmount}&eventCategory=${currentQuestion.eventNum}&acquaintanceType=${currentQuestion.targetNum}&intimacyLevel=${currentQuestion.relationshipNum}`
+              )
+              .then((res) => {
+                console.log("완료");
+                setRecommendList(res.data);
+                // console.log(res.data);
+              });
+          } catch (error) {
+            console.log(error);
+            // Handle errors or display error messages
+          }
         };
-        console.log(requestConfig);
+
+        getData();
       }
     }
-    // axios
-    //   .get("/recommendation/get",requestConfig)
-    //   .then((res) => {
-    //     setRecommendList(res.data);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error fetching data:", error);
-    //   });
   }, [questionIndex]);
 
   const handleOptionSelect = (index) => {
@@ -331,8 +329,8 @@ const SurveyPage3 = () => {
         const updatedAnswers = Array(amountOptions.length).fill(false);
         // console.log(updatedAnswers);
         const nextSelected = selectedAnswers[questionIndex + 1];
-        console.log(selectedAnswers);
-        console.log(questionIndex);
+        // console.log(selectedAnswers);
+        // console.log(questionIndex);
         if (nextSelected) {
           const answerIndex = amountOptions.findIndex((option) => option.value === nextSelected.answer);
           if (answerIndex !== -1) {
@@ -342,31 +340,37 @@ const SurveyPage3 = () => {
         }
       } else {
         // 모든 질문에 답변을 선택한 경우, axios로 데이터 제출
-        console.log(selectedAnswers);
+        // console.log(selectedAnswers);
         const shouldSubmit = window.confirm("답변을 제출하시겠습니까?");
 
         if (shouldSubmit) {
           console.log("제출");
-          console.log(selectedAnswers);
+          // console.log(selectedAnswers);
           setSubmissionState("submit");
           try {
             const response = await axios
-              .post(`/recommendation/save`, {
-                ageGroup: selectedAnswers[0].answer,
-                annualIncome: selectedAnswers[1].answer,
-                relationInfoList: selectedAnswers.slice(2),
-              })
+              .post(
+                `http://43.200.225.232:8080/recommendation/save`,
+                {
+                  ageGroup: selectedAnswers[0].payAmount,
+                  annualIncome: selectedAnswers[1].payAmount,
+                  relationInfoList: selectedAnswers.slice(2),
+                },
+                {
+                  withCredentials: true,
+                }
+              )
               .then(() => {
                 console.log("완료");
+                setSubmissionState("submit");
               });
 
             if (response.status === 201) {
-              setSubmissionState("submit");
               console.log("Recommendation data submitted successfully!");
               // You can perform additional actions here upon success
             }
           } catch (error) {
-            console.error("Error submitting recommendation data:", error);
+            console.log(error);
             // Handle errors or display error messages
           }
         }
@@ -385,12 +389,12 @@ const SurveyPage3 = () => {
       const updatedAnswers = Array(amountOptions.length).fill(false);
       const previousSelected = selectedAnswers[questionIndex - 1];
 
-      console.log(answers);
+      // console.log(answers);
       const answerIndex = answers.findIndex((option) => option === true);
       console.log(answerIndex);
       if (previousSelected) {
         const answerIndex = amountOptions.findIndex((option) => option.value === previousSelected.answer);
-        console.log(previousSelected);
+        // console.log(previousSelected);
         if (answerIndex !== -1) {
           updatedAnswers[answerIndex] = true;
           setAnswers(updatedAnswers);
@@ -434,7 +438,13 @@ const SurveyPage3 = () => {
           </h3>
           {currentQuestion?.target === "나이" || currentQuestion?.target === "연소득" ? null : (
             <h5 className="recommend_text">
-              이 질문에 가장 많은 사용자가 <span style={{ color: "#6d61ff", fontSize: 15 }}>10만원</span>이라고 답변했어요!
+              {recommendList === 0 ? (
+                ""
+              ) : (
+                <span style={{ fontSize: 14 }}>
+                  이 질문에 가장 많은 사용자가 <span style={{ color: "#6d61ff", fontSize: 15 }}>{recommendList}</span>이라고 답변했어요!
+                </span>
+              )}
             </h5>
           )}
           <ul className="answer_list">

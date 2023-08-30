@@ -1,9 +1,8 @@
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
-module.exports = function (app) {
+module.exports = (app) => {
   app.use(
-    "/api",
-    createProxyMiddleware({
+    createProxyMiddleware("/recommendation", {
       target: "http://43.200.225.232:8080",
       changeOrigin: true,
     })
