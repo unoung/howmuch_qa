@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { API } from "./api";
 
-const BASE_URL = "http://43.200.225.232:8080";
+const BASE_URL = "https://howmuchpay.shop";
 
 const SurveyPage3 = () => {
   const relationshipOptions = [
@@ -39,6 +39,7 @@ const SurveyPage3 = () => {
 
   // const amountOptions = ["5만원", "10만원", "15만원", "20만원", "30만원", "50만원", "100만원 혹은 그 이상"];
   const amountOptions = [
+    { option: "모르겠음", value: 0 },
     { option: "5만원", value: 5 },
     { option: "10만원", value: 10 },
     { option: "15만원", value: 15 },
@@ -109,7 +110,7 @@ const SurveyPage3 = () => {
           ],
         };
       } else if (targetOption.target === "자녀") {
-        const childOptions = relationshipOptions.filter((option) => option.intimacy === 2 || option.intimacy === 3);
+        const childOptions = relationshipOptions.filter((option) => option.title === "명절이나 특별한 날만 인사를 주고받는 사이" || option.title === "특별한 일 없어도 안부를 주고받는 사이");
         randomRelationship = childOptions[Math.floor(Math.random() * childOptions.length)];
         const childEventOptions = [
           { event: "돌잔치", eventNum: 3 },
@@ -209,8 +210,8 @@ const SurveyPage3 = () => {
       } else if (targetOption.target === "연인") {
         const childOptions = [
           { title: "교제한지 얼마 되지않은 사이", intimacy: 1 },
-          { title: "1년정도 꾸준하게 만나고 있는 사이", intimacy: 2 },
-          { title: "오랫동안 교제해온 사이", intimacy: 3 },
+          { title: "1년정도 꾸준하게 만나고 있는 사이", intimacy: 3 },
+          { title: "오랫동안 교제해온 사이", intimacy: 5 },
         ];
         randomRelationship = childOptions[Math.floor(Math.random() * childOptions.length)];
         const childEventOptions = [
@@ -283,7 +284,7 @@ const SurveyPage3 = () => {
           try {
             const response = await axios
               .get(
-                `http://43.200.225.232:8080/recommendation/get?ageGroup=${selectedAnswers[0].payAmount}&annualIncome=${selectedAnswers[1].payAmount}&eventCategory=${currentQuestion.eventNum}&acquaintanceType=${currentQuestion.targetNum}&intimacyLevel=${currentQuestion.relationshipNum}`
+                `https://howmuchpay.shop/recommendation/get?ageGroup=${selectedAnswers[0].payAmount}&annualIncome=${selectedAnswers[1].payAmount}&eventCategory=${currentQuestion.eventNum}&acquaintanceType=${currentQuestion.targetNum}&intimacyLevel=${currentQuestion.relationshipNum}`
               )
               .then((res) => {
                 console.log("완료");
@@ -350,7 +351,7 @@ const SurveyPage3 = () => {
           try {
             const response = await axios
               .post(
-                `http://43.200.225.232:8080/recommendation/save`,
+                `https://howmuchpay.shop/recommendation/save`,
                 {
                   ageGroup: selectedAnswers[0].payAmount,
                   annualIncome: selectedAnswers[1].payAmount,
@@ -415,24 +416,25 @@ const SurveyPage3 = () => {
         <div className="content_wrap">
           <div className="logo_title">
             <img className="logo" alt="logo" src="/howmuch.png" />
-            <h2 className="main_title"> 경조사 비용 관리, 추천 어플 얼마나</h2>
+            <h2 className="main_title" style={{ marginBottom: 0 }}>
+              {" "}
+              경조사 비용 관리, 추천 어플 얼마나
+            </h2>
           </div>
           <h3 className="qa_title">
             {currentQuestion?.target === "나이" || currentQuestion?.target === "연소득" ? (
               <>
-                <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentQuestion?.target}</span>
+                <span style={{ color: "#6d61ff", fontWeight: 700 }}>{currentQuestion?.target}</span>
                 <span>(이)가 어떻게 되시나요?</span>
               </>
             ) : currentQuestion?.target === "배우자" ? (
               <>
-                <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentQuestion?.target}</span>의 <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentEvent}</span>에 얼마를
-                내시겠어요?
+                <span style={{ color: "#6d61ff", fontWeight: 700 }}>{currentQuestion?.target}</span>의 <span style={{ color: "#6d61ff", fontWeight: 700 }}>{currentEvent}</span>에 얼마를 내시겠어요?
               </>
             ) : (
               <>
-                <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentRelationship}</span>의 관계인{" "}
-                <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentQuestion?.target}</span>의 <span style={{ color: "#6d61ff", fontFamily: "font_EB" }}>{currentEvent}</span>에 얼마를
-                내시겠어요?
+                <span style={{ color: "#6d61ff", fontWeight: 700 }}>{currentRelationship}</span>의 <span style={{ color: "#6d61ff", fontWeight: 700 }}>{currentQuestion?.target}</span>의{" "}
+                <span style={{ color: "#6d61ff", fontWeight: 700 }}>{currentEvent}</span>에 얼마를 내시겠어요?
               </>
             )}
           </h3>
@@ -466,21 +468,14 @@ const SurveyPage3 = () => {
                         }}
                       >
                         {answers[index] && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            fill="white"
-                            viewBox="0 0 16 16"
-                            style={{ position: "absolute", top: "2px", left: "1px", fontFamily: "font_B" }}
-                          >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16" style={{ position: "absolute", top: "2px", left: "1px", fontWeight: 700 }}>
                             <path d="M12.74 4.28a1 1 0 0 1 1.41 1.41l-6 6a1 1 0 0 1-1.41 0l-3-3a1 1 0 0 1 1.41-1.41L7 10.58l5.33-5.3z" />
                           </svg>
                         )}
                       </span>
                       <span
                         className="option_span"
-                        style={{ position: "relative", top: "-5px", marginLeft: "5px", color: answers[index] ? "#6d61ff" : "black", fontFamily: answers[index] ? "font_EB" : "font_M" }}
+                        style={{ position: "relative", top: "-5px", marginLeft: "5px", color: answers[index] ? "#6d61ff" : "black", fontWeight: answers[index] ? 700 : 500 }}
                       >
                         {option.option}
                       </span>
@@ -510,7 +505,7 @@ const SurveyPage3 = () => {
                             height="16"
                             fill="white"
                             viewBox="0 0 16 16"
-                            style={{ position: "absolute", top: "2px", left: "1px", fontFamily: "font_B" }}
+                            style={{ position: "absolute", top: "2px", left: "1px", fontFamily: "font_SB" }}
                           >
                             <path d="M12.74 4.28a1 1 0 0 1 1.41 1.41l-6 6a1 1 0 0 1-1.41 0l-3-3a1 1 0 0 1 1.41-1.41L7 10.58l5.33-5.3z" />
                           </svg>
@@ -518,7 +513,7 @@ const SurveyPage3 = () => {
                       </span>
                       <span
                         className="option_span"
-                        style={{ position: "relative", top: "-5px", marginLeft: "5px", color: answers[index] ? "#6d61ff" : "black", fontFamily: answers[index] ? "font_EB" : "font_M" }}
+                        style={{ position: "relative", top: "-5px", marginLeft: "5px", color: answers[index] ? "#6d61ff" : "black", fontFamily: answers[index] ? "font_SB" : "font_M" }}
                       >
                         {option.option}
                       </span>
@@ -527,7 +522,7 @@ const SurveyPage3 = () => {
                 ))}
           </ul>
 
-          {showWarning && <p style={{ color: "red", fontFamily: "font_B" }}>답변을 선택해주세요.</p>}
+          {showWarning && <p style={{ color: "red", fontFamily: "font_SB" }}>답변을 선택해주세요.</p>}
 
           <div className="btn_wrap">
             {questionIndex > 0 && (

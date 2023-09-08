@@ -5,7 +5,7 @@ li {
 body {
   margin: 0px;
   padding: 0px;
-  background-color: #f3f3ff;
+  background-color: #dcdcfc;
 }
 
 .wrap {
@@ -17,7 +17,7 @@ body {
   max-width: 320px;
   /* height: 500px; */
   /* background-color: #f4f4f4; */
-  background-color: #f3f3ff;
+  background-color: #dcdcfc;
   padding: 20px 0;
   border-radius: 20px;
 }
@@ -43,7 +43,7 @@ body {
 }
 
 .main_title {
-  font-family: "font_B";
+  /* font-family: "font_SB"; */
   /* color: #6d61ff; */
   font-size: 17px;
   text-align: center;
@@ -56,21 +56,22 @@ body {
 }
 .des_title {
   font-size: 15px;
-  font-family: "font_B";
+  /* font-family: "font_SB"; */
   margin-bottom: 8px;
 }
 .des_info {
   font-size: 14px;
-  font-weight: "font_M";
+  /* font-family: "font_M"; */
   color: rgb(31, 31, 31);
 }
 .des_warning {
   font-size: 14px;
-  color: #a09bd1;
-  font-family: "font_SB";
+  color: #7469c4;
+  /* font-family: "font_SB"; */
+  font-weight: 600;
 }
 .qa_title {
-  font-family: "font_R";
+  /* font-family: "font_R"; */
   font-size: 16px;
   line-height: 26px;
   text-align: center;
@@ -101,7 +102,7 @@ body {
 }
 
 .left_qa {
-  font-family: "font_M";
+  /* font-family: "font_M"; */
   font-size: 15px;
   color: #a09bd1;
 }
@@ -111,8 +112,9 @@ body {
   padding: 8px 15px;
   border-radius: 8px;
   font-size: 14px;
-  font-family: "font_SB";
+  /* font-family: "font_SB"; */
   color: #fff;
+  font-weight: 600;
 }
 
 .start_btn {
@@ -124,6 +126,6 @@ body {
   padding: 13px 15px;
   border-radius: 8px;
   font-size: 16px;
-  font-family: "font_SB";
+  /* font-family: "font_SB"; */
   color: #fff;
 }

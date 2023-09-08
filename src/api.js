@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_ENDPOINT = "http://43.200.225.232:8080";
+const API_ENDPOINT = "https://howmuchpay.shop";
 
 export const API = axios.create({
   baseURL: API_ENDPOINT,
