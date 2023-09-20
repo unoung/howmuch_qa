@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_ENDPOINT = "https://howmuchpay.shop";
+const API_ENDPOINT = "https://howmuchpay.store";
 
 export const API = axios.create({
   baseURL: API_ENDPOINT,

@@ -284,7 +284,7 @@ const SurveyPage3 = () => {
           try {
             const response = await axios
               .get(
-                `https://howmuchpay.shop/recommendation/get?ageGroup=${selectedAnswers[0].payAmount}&annualIncome=${selectedAnswers[1].payAmount}&eventCategory=${currentQuestion.eventNum}&acquaintanceType=${currentQuestion.targetNum}&intimacyLevel=${currentQuestion.relationshipNum}`
+                `https://howmuchpay.store/recommendation/get?ageGroup=${selectedAnswers[0].payAmount}&annualIncome=${selectedAnswers[1].payAmount}&eventCategory=${currentQuestion.eventNum}&acquaintanceType=${currentQuestion.targetNum}&intimacyLevel=${currentQuestion.relationshipNum}`
               )
               .then((res) => {
                 console.log("완료");
@@ -351,7 +351,7 @@ const SurveyPage3 = () => {
           try {
             const response = await axios
               .post(
-                `https://howmuchpay.shop/recommendation/save`,
+                `https://howmuchpay.store/recommendation/save`,
                 {
                   ageGroup: selectedAnswers[0].payAmount,
                   annualIncome: selectedAnswers[1].payAmount,
